@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>CinePedia - {{ pelicula.titulo }}</title>
+	<link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+	<header>
+		<h1>CinePedia</h1>
+		<nav>
+			<a href="/cine">Inicio</a>
+			<a href="/logout">Cerrar Sesión</a>
+		</nav>
+	</header>
+	<main>
+		<h2>{{ pelicula.titulo }}</h2>
+		
+		{% with messages = get_flashed_messages(with_categories=true) %}
+			{% if messages %}
+				<ul class="flashes">
+				{% for category, message in messages %}
+					<li class="{{ category }}">{{ message }}</li>
+				{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
+
+		<div class="movie-details">
+			<div class="movie-header">
+				<div class="movie-info">
+					<h1 class="movie-title">{{ pelicula.titulo }}</h1>
+					<div class="movie-meta">
+						<span class="movie-year">{{ pelicula.fecha_estreno }}</span>
+						<span class="movie-director">{{ pelicula.director }}</span>
+					</div>
+					<p class="movie-author">Publicado por <strong>{{ pelicula.autor_nombre }}</strong></p>
+				</div>
+			</div>
+			<div class="movie-synopsis-section">
+				<h3>Sinopsis</h3>
+				<p class="movie-synopsis-text">{{ pelicula.sinopsis }}</p>
+			</div>
+		</div>
+
+		<div class="comments-section">
+			<h3>Comentarios</h3>
+			
+			{% if pelicula.usuario_id != session.get('user_id') %}
+				<form method="POST" action="/cine/{{ pelicula.id }}/comentarios" class="comment-form">
+					<label for="contenido">Escribe un comentario...</label>
+					<textarea id="contenido" name="contenido" rows="3" required></textarea>
+					<button type="submit">Enviar</button>
+				</form>
+			{% endif %}
+
+			<div class="comments-list">
+				{% for comentario in comentarios %}
+					<div class="comment">
+						<div class="comment-header">
+							<div class="comment-author">
+								<strong>{{ comentario.nombre }}</strong>
+								<span class="comment-date">{{ comentario.created_at.strftime('%d de %B, %Y') }}</span>
+							</div>
+							{% if comentario.usuario_id == session.get('user_id') %}
+								<form method="POST" action="/cine/{{ pelicula.id }}/comentarios/{{ comentario.id }}/eliminar" style="display:inline">
+									<button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que quieres eliminar este comentario?')">Eliminar</button>
+								</form>
+							{% endif %}
+						</div>
+						<div class="comment-content">
+							<p>{{ comentario.contenido }}</p>
+						</div>
+					</div>
+				{% endfor %}
+				{% if not comentarios %}
+					<div class="no-comments">
+						<p>No hay comentarios aún. ¡Sé el primero en comentar!</p>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</main>
+</body>
+</html>

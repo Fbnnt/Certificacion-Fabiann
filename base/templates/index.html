@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>CinePedia</title>
+	<link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+	<header>
+		<h1>CinePedia</h1>
+	</header>
+	<main>
+		{% with messages = get_flashed_messages(with_categories=true) %}
+			{% if messages %}
+				<ul class="flashes">
+				{% for category, message in messages %}
+					<li class="{{ category }}">{{ message }}</li>
+				{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
+
+		<div class="auth-container">
+			<div class="auth-section">
+				<h2>Registro</h2>
+				<form method="POST" action="/registro">
+					<label for="nombre">Nombre:</label>
+					<input type="text" id="nombre" name="nombre" required>
+
+					<label for="apellido">Apellido:</label>
+					<input type="text" id="apellido" name="apellido" required>
+
+					<label for="email_reg">E-mail:</label>
+					<input type="email" id="email_reg" name="email" required>
+
+					<label for="password_reg">Contraseña:</label>
+					<input type="password" id="password_reg" name="password" required>
+
+					<label for="confirm">Conf. Contraseña:</label>
+					<input type="password" id="confirm" name="confirm" required>
+
+					<button type="submit">Registrar</button>
+				</form>
+			</div>
+
+			<div class="auth-section">
+				<h2>Inicio de Sesión</h2>
+				<form method="POST" action="/login">
+					<label for="email_login">E-mail:</label>
+					<input type="email" id="email_login" name="email" required>
+
+					<label for="password_login">Contraseña:</label>
+					<input type="password" id="password_login" name="password" required>
+
+					<button type="submit">Iniciar Sesión</button>
+				</form>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

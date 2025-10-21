@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>CinePedia</title>
+	<link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+	<header>
+		<h1>CinePedia</h1>
+		<nav>
+			<a href="/cine/nueva">Nueva Peli</a>
+			<a href="/logout">Cerrar Sesión</a>
+		</nav>
+	</header>
+	<main>
+		<h2>Bienvenido, {{ user_name }}</h2>
+		
+		{% with messages = get_flashed_messages(with_categories=true) %}
+			{% if messages %}
+				<ul class="flashes">
+				{% for category, message in messages %}
+					<li class="{{ category }}">{{ message }}</li>
+				{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
+
+		{% if peliculas %}
+			<div class="movie-grid">
+				{% for pelicula in peliculas %}
+					<div class="movie-card">
+						<div class="movie-card-header">
+							<h3>{{ pelicula.titulo }}</h3>
+							<span class="movie-year">{{ pelicula.fecha_estreno }}</span>
+						</div>
+						<div class="movie-card-content">
+							<p class="movie-director"><strong>Director:</strong> {{ pelicula.director }}</p>
+							<p class="movie-author"><strong>Publicado por:</strong> {{ pelicula.autor_nombre }}</p>
+							{% if pelicula.sinopsis %}
+								<p class="movie-synopsis">{{ pelicula.sinopsis[:100] }}{% if pelicula.sinopsis|length > 100 %}...{% endif %}</p>
+							{% endif %}
+						</div>
+						<div class="movie-card-actions">
+							<a href="/cine/{{ pelicula.id }}" class="btn btn-primary">Ver Detalles</a>
+							{% if pelicula.usuario_id == session.get('user_id') %}
+								<a href="/cine/editar/{{ pelicula.id }}" class="btn btn-secondary">Editar</a>
+								<form method="post" action="/cine/{{ pelicula.id }}/eliminar" style="display:inline">
+									<button type="submit" class="btn-delete" onclick="return confirm('¿Estás seguro de que quieres eliminar esta película?')">Eliminar</button>
+								</form>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		{% else %}
+			<div class="empty-state">
+				<h3>No hay películas registradas</h3>
+				<p>¡Comienza agregando tu primera película!</p>
+				<a href="/cine/nueva" class="btn">Agregar Primera Película</a>
+			</div>
+		{% endif %}
+	</main>
+</body>
+</html>

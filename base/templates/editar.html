@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>CinePedia - Editar Película</title>
+	<link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+	<header>
+		<h1>CinePedia</h1>
+		<nav>
+			<a href="/cine">Inicio</a>
+			<a href="/logout">Cerrar Sesión</a>
+		</nav>
+	</header>
+	<main>
+		<h2>Editar Película</h2>
+		
+		{% with messages = get_flashed_messages(with_categories=true) %}
+			{% if messages %}
+				<ul class="flashes">
+				{% for category, message in messages %}
+					<li class="{{ category }}">{{ message }}</li>
+				{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
+
+		<form method="POST" action="/cine/editar/{{ pelicula.id }}" class="movie-form">
+			<label for="titulo">Nombre de Peli:</label>
+			<input type="text" id="titulo" name="titulo" value="{{ form_data.get('titulo', pelicula.titulo) }}" required>
+
+			<label for="director">Director:</label>
+			<input type="text" id="director" name="director" value="{{ form_data.get('director', pelicula.director) }}" required>
+
+			<label for="fecha_estreno">Fecha Estreno:</label>
+			<input type="date" id="fecha_estreno" name="fecha_estreno" value="{{ form_data.get('fecha_estreno', pelicula.fecha_estreno) }}" required>
+
+			<label for="sinopsis">Sinopsis:</label>
+			<textarea id="sinopsis" name="sinopsis" rows="5" required>{{ form_data.get('sinopsis', pelicula.sinopsis) }}</textarea>
+
+			<button type="submit">Guardar Película</button>
+		</form>
+	</main>
+</body>
+</html>
